@@ -1,0 +1,195 @@
+import 'package:cookie_jar/cookie_jar.dart';
+import 'package:dio/dio.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import 'package:turn_page/common/values/values.dart';
+import 'package:turn_page/widgets/toast.dart';
+
+import 'utils.dart';
+
+class HttpUtil {
+  static HttpUtil _instance = HttpUtil._internal();
+
+  factory HttpUtil() => _instance;
+
+  Dio dio;
+  CancelToken cancelToken = new CancelToken();
+
+  HttpUtil._internal() {
+    // BaseOptions、Options、RequestOptions 都可以配置参数，优先级一次递增，且可以根据优先级覆盖参数
+    BaseOptions options = new BaseOptions(
+        baseUrl: SERVER_API_URL,
+        // 连接服务器事件，单位是毫秒
+        connectTimeout: 10 * 1000,
+        // 相应流上前后两次接受数据的间隔，单位毫秒
+        receiveTimeout: 5 * 1000,
+        // 请求头
+        headers: {},
+        contentType: 'applicetion/json; charset=utf-8',
+        // 响应数据格式
+        responseType: ResponseType.json);
+
+    dio = new Dio(options);
+
+    // Cookie管理
+    CookieJar cookieJar = CookieJar();
+    dio.interceptors.add(CookieManager(cookieJar));
+
+    // 添加拦截器
+    dio.interceptors
+        .add(InterceptorsWrapper(onRequest: (RequestOptions options) {
+      return options;
+    }, onResponse: (Response response) {
+      return response;
+    }, onError: (DioError e) {
+      ErrorEntity eInfo = createErrorEntity(e);
+      // 错误提示
+      toast(msg: eInfo.message);
+      var context = e.request.extra["context"];
+      if (context != null) {
+        switch (eInfo.code) {
+          case 401:
+            // 没有权限 重新登录
+            goLoginPage(context);
+            break;
+          default:
+        }
+      }
+      return eInfo;
+    }));
+  }
+
+  // error 统一处理
+  ErrorEntity createErrorEntity(DioError e) {
+    switch (e.type) {
+      case DioErrorType.CANCEL:
+        return ErrorEntity(code: -1, message: "请求取消");
+      case DioErrorType.CONNECT_TIMEOUT:
+        return ErrorEntity(code: -1, message: "连接超时");
+      case DioErrorType.SEND_TIMEOUT:
+        return ErrorEntity(code: -1, message: "请求超时");
+      case DioErrorType.RECEIVE_TIMEOUT:
+        return ErrorEntity(code: -1, message: "响应超时");
+      case DioErrorType.RESPONSE:
+        try {
+          int errCode = e.response.statusCode;
+          switch (errCode) {
+            case 400:
+              return ErrorEntity(code: errCode, message: "请求语法错误");
+            case 401:
+              return ErrorEntity(code: errCode, message: "没有权限");
+            case 403:
+              return ErrorEntity(code: errCode, message: "服务器拒绝请求");
+            case 404:
+              return ErrorEntity(code: errCode, message: "无法连接到服务器");
+            case 405:
+              return ErrorEntity(code: errCode, message: "请求方法被禁止");
+            case 500:
+              return ErrorEntity(code: errCode, message: "服务器内部错误");
+            case 502:
+              return ErrorEntity(code: errCode, message: "无效的请求");
+            case 503:
+              return ErrorEntity(code: errCode, message: "服务器挂了");
+            case 505:
+              return ErrorEntity(code: errCode, message: "不支持HTTP协议请求");
+            default:
+              return ErrorEntity(
+                  code: errCode, message: e.response.statusMessage);
+          }
+        } on Exception catch (_) {
+          return ErrorEntity(code: -1, message: "未知错误");
+        }
+        break;
+      default:
+        return ErrorEntity(code: -1, message: e.message);
+    }
+  }
+
+  // 取消请求
+  void cancelRequest(CancelToken token) {
+    token.cancel("cancelled");
+  }
+
+  /// 读取本地配置
+  Options getLocalOptions() {
+    Options options;
+    String token = StorageUtil().getItem(STORAGE_USER_TOKEN_KEY);
+    if (token != null) {
+      options = Options(headers: {'Authorization': 'Bearer $token'});
+    }
+    return options;
+  }
+
+  /// restful get 操作
+  Future get(String path,
+      {dynamic params, Options options, CancelToken cancelToken}) async {
+    try {
+      var tokenOptions = options ?? getLocalOptions();
+      var response = await dio.get(path,
+          queryParameters: params,
+          options: tokenOptions,
+          cancelToken: cancelToken);
+      return response.data;
+    } on DioError catch (e) {
+      throw createErrorEntity(e);
+    }
+  }
+
+  /// restful post 操作
+  Future post(String path,
+      {dynamic params, Options options, CancelToken cancelToken}) async {
+    try {
+      var tokenOptions = options ?? getLocalOptions();
+      var response = await dio.post(path,
+          data: params, options: tokenOptions, cancelToken: cancelToken);
+      return response.data;
+    } on DioError catch (e) {
+      throw createErrorEntity(e);
+    }
+  }
+
+  /// restful put 操作
+  Future put(String path,
+      {dynamic params, Options options, CancelToken cancelToken}) async {
+    try {
+      var tokenOptions = options ?? getLocalOptions();
+      var response = await dio.put(path,
+          data: params, options: tokenOptions, cancelToken: cancelToken);
+      return response.data;
+    } on DioError catch (e) {
+      throw createErrorEntity(e);
+    }
+  }
+
+  /// restful delete 操作
+  Future delete(String path,
+      {dynamic params, Options options, CancelToken cancelToken}) async {
+    try {
+      var tokenOptions = options ?? getLocalOptions();
+      var response = await dio.delete(path,
+          data: params, options: tokenOptions, cancelToken: cancelToken);
+      return response.data;
+    } on DioError catch (e) {}
+  }
+
+  /// restful post form 表单提交操作
+  Future postForm(String path,
+      {dynamic params, Options options, CancelToken cancelToken}) async {
+    try {
+      var tokenOptions = options ?? getLocalOptions();
+      var response =
+          await dio.post(path, options: tokenOptions, cancelToken: cancelToken);
+      return response.data;
+    } on DioError catch (e) {}
+  }
+}
+
+class ErrorEntity implements Exception {
+  int code;
+  String message;
+  ErrorEntity({this.code, this.message});
+
+  String toString() {
+    if (message == null) return "Exception";
+    return "Exception: code $code, $message";
+  }
+}
