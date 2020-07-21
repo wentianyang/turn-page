@@ -168,7 +168,9 @@ class HttpUtil {
       var response = await dio.delete(path,
           data: params, options: tokenOptions, cancelToken: cancelToken);
       return response.data;
-    } on DioError catch (e) {}
+    } on DioError catch (e) {
+      throw createErrorEntity(e);
+    }
   }
 
   /// restful post form 表单提交操作
@@ -179,7 +181,9 @@ class HttpUtil {
       var response =
           await dio.post(path, options: tokenOptions, cancelToken: cancelToken);
       return response.data;
-    } on DioError catch (e) {}
+    } on DioError catch (e) {
+      throw createErrorEntity(e);
+    }
   }
 }
 

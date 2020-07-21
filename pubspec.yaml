@@ -38,7 +38,7 @@ dependencies:
   # 本地存储
   localstorage: ^3.0.2+5
   # 安全加密
-  crypto: ^2.1.5
+  crypto: ^2.1.4
 
 dev_dependencies:
   flutter_test:

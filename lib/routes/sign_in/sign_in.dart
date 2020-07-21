@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:turn_page/common/api/api.dart';
+import 'package:turn_page/common/entity/entities.dart';
 import 'package:turn_page/common/utils/screen.dart';
 import 'package:turn_page/common/utils/utils.dart';
 import 'package:turn_page/common/values/colors.dart';
@@ -21,7 +23,7 @@ class _SignInPageState extends State<SignInPage> {
   final TextEditingController _passwordController = new TextEditingController();
 
   // 登录验证
-  _handlerSignIn() {
+  _handlerSignIn() async {
     if (!duIsEmail(_emailController.value.text)) {
       toast(msg: "邮箱格式不正确...");
       return;
@@ -31,6 +33,13 @@ class _SignInPageState extends State<SignInPage> {
       toast(msg: "密码不能小于6位...");
       return;
     }
+
+    UserRequestEntity userRequestEntity = new UserRequestEntity(
+        email: _emailController.value.text,
+        password: _passwordController.value.text);
+    UserResponseEntity response =
+        await UserAPI.login(params: userRequestEntity);
+    print("user login response ${response.toJson()}");
   }
 
   // 注册跳转
