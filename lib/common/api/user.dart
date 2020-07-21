@@ -4,8 +4,8 @@ import 'package:turn_page/common/utils/http.dart';
 
 class UserAPI {
   /// 登录
-  static Future<UserResponseEntity> login({UserRequestEntity params}) async {
+  static Future<UserLoginResponseEntity> login({UserLoginRequestEntity params}) async {
     var response = await HttpUtil().post('/user/login', params: params);
-    return UserResponseEntity.fromJson(response);
+    return UserLoginResponseEntity.fromJson(response);
   }
 }

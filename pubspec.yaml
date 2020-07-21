@@ -36,7 +36,7 @@ dependencies:
   cookie_jar: ^1.0.0
   dio_cookie_manager: ^1.0.0
   # 本地存储
-  localstorage: ^3.0.2+5
+  shared_preferences: ^0.5.8
   # 安全加密
   crypto: ^2.1.4
 

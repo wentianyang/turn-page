@@ -1,14 +1,14 @@
 import 'package:flutter/widgets.dart';
 
 // 登录请求
-class UserRequestEntity {
+class UserLoginRequestEntity {
   final String email;
   final String password;
 
-  UserRequestEntity({@required this.email, @required this.password});
+  UserLoginRequestEntity({@required this.email, @required this.password});
 
-  factory UserRequestEntity.fromJson(Map<String, dynamic> json) =>
-      UserRequestEntity(email: json["email"], password: json["password"]);
+  factory UserLoginRequestEntity.fromJson(Map<String, dynamic> json) =>
+      UserLoginRequestEntity(email: json["email"], password: json["password"]);
 
   Map<String, dynamic> toJson() => {
         "email": email,
@@ -17,16 +17,16 @@ class UserRequestEntity {
 }
 
 // 登录返回
-class UserResponseEntity {
+class UserLoginResponseEntity {
   String accessToken;
   String displayName;
   List<String> channels;
 
-  UserResponseEntity(
+  UserLoginResponseEntity(
       {@required this.accessToken, this.displayName, this.channels});
 
-  factory UserResponseEntity.fromJson(Map<String, dynamic> json) =>
-      UserResponseEntity(
+  factory UserLoginResponseEntity.fromJson(Map<String, dynamic> json) =>
+      UserLoginResponseEntity(
           accessToken: json["access_token"],
           displayName: json["display_name"],
           channels: List<String>.from(json["channels"].map((x) => x)));

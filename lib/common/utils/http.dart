@@ -1,7 +1,11 @@
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:turn_page/common/utils/net_cache.dart';
+import 'package:turn_page/common/values/cache.dart';
 import 'package:turn_page/common/values/values.dart';
+import 'package:turn_page/global.dart';
 import 'package:turn_page/widgets/toast.dart';
 
 import 'utils.dart';
@@ -56,6 +60,8 @@ class HttpUtil {
       }
       return eInfo;
     }));
+    // 添加缓存拦截器
+    dio.interceptors.add(NetCache());
   }
 
   // error 统一处理
@@ -109,24 +115,30 @@ class HttpUtil {
     token.cancel("cancelled");
   }
 
-  /// 读取本地配置
-  Options getLocalOptions() {
-    Options options;
-    String token = StorageUtil().getItem(STORAGE_USER_TOKEN_KEY);
-    if (token != null) {
-      options = Options(headers: {'Authorization': 'Bearer $token'});
-    }
-    return options;
-  }
-
   /// restful get 操作
   Future get(String path,
-      {dynamic params, Options options, CancelToken cancelToken}) async {
+      {dynamic params,
+      Options options,
+      bool refresh = false,
+      bool noCache = !CACHE_ENABLE,
+      bool list = false,
+      String cacheKey}) async {
     try {
-      var tokenOptions = options ?? getLocalOptions();
+      var requestOptions = options ?? Options();
+      requestOptions = requestOptions.merge(extra: {
+        "refresh": refresh,
+        "noCache": noCache,
+        "list": list,
+        "cacheKey": cacheKey
+      });
+
+      Map<String, dynamic> _authorization = getAuthorizationHeader();
+      if (_authorization != null) {
+        requestOptions = requestOptions.merge(headers: _authorization);
+      }
       var response = await dio.get(path,
           queryParameters: params,
-          options: tokenOptions,
+          options: requestOptions,
           cancelToken: cancelToken);
       return response.data;
     } on DioError catch (e) {
@@ -138,7 +150,7 @@ class HttpUtil {
   Future post(String path,
       {dynamic params, Options options, CancelToken cancelToken}) async {
     try {
-      var tokenOptions = options ?? getLocalOptions();
+      var tokenOptions = options ?? getAuthorizationHeader();
       var response = await dio.post(path,
           data: params, options: tokenOptions, cancelToken: cancelToken);
       return response.data;
@@ -151,7 +163,7 @@ class HttpUtil {
   Future put(String path,
       {dynamic params, Options options, CancelToken cancelToken}) async {
     try {
-      var tokenOptions = options ?? getLocalOptions();
+      var tokenOptions = options ?? getAuthorizationHeader();
       var response = await dio.put(path,
           data: params, options: tokenOptions, cancelToken: cancelToken);
       return response.data;
@@ -164,7 +176,7 @@ class HttpUtil {
   Future delete(String path,
       {dynamic params, Options options, CancelToken cancelToken}) async {
     try {
-      var tokenOptions = options ?? getLocalOptions();
+      var tokenOptions = options ?? getAuthorizationHeader();
       var response = await dio.delete(path,
           data: params, options: tokenOptions, cancelToken: cancelToken);
       return response.data;
@@ -177,13 +189,22 @@ class HttpUtil {
   Future postForm(String path,
       {dynamic params, Options options, CancelToken cancelToken}) async {
     try {
-      var tokenOptions = options ?? getLocalOptions();
+      var tokenOptions = options ?? getAuthorizationHeader();
       var response =
           await dio.post(path, options: tokenOptions, cancelToken: cancelToken);
       return response.data;
     } on DioError catch (e) {
       throw createErrorEntity(e);
     }
+  }
+
+  Map<String, dynamic> getAuthorizationHeader() {
+    var headers;
+    String accessToken = Global.profile.accessToken;
+    if (accessToken != null) {
+      headers = {'Authorization': 'Bearer $accessToken'};
+    }
+    return headers;
   }
 }
 

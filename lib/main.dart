@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:turn_page/global.dart';
 import 'package:turn_page/routes/routes.dart';
 import 'package:turn_page/routes/welcome/welcome.dart';
 
-void main() {
-  runApp(MyApp());
-}
+void main() => Global.init().then((e) => runApp(MyApp()));
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.

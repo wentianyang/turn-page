@@ -6,6 +6,7 @@ import 'package:turn_page/common/utils/screen.dart';
 import 'package:turn_page/common/utils/utils.dart';
 import 'package:turn_page/common/values/colors.dart';
 import 'package:turn_page/common/values/shadows.dart';
+import 'package:turn_page/global.dart';
 import 'package:turn_page/widgets/button.dart';
 import 'package:turn_page/widgets/input.dart';
 import 'package:turn_page/widgets/toast.dart';
@@ -34,11 +35,12 @@ class _SignInPageState extends State<SignInPage> {
       return;
     }
 
-    UserRequestEntity userRequestEntity = new UserRequestEntity(
+    UserLoginRequestEntity userRequestEntity = new UserLoginRequestEntity(
         email: _emailController.value.text,
-        password: _passwordController.value.text);
-    UserResponseEntity response =
+        password: duSHA256(_passwordController.value.text));
+    UserLoginResponseEntity response =
         await UserAPI.login(params: userRequestEntity);
+    Global.saveProfile(response);
     print("user login response ${response.toJson()}");
   }
 
