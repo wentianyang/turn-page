@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:turn_page/common/api/api.dart';
+import 'package:turn_page/common/api/news.dart';
 import 'package:turn_page/common/entity/entities.dart';
 import 'package:turn_page/common/utils/screen.dart';
 import 'package:turn_page/common/utils/utils.dart';
@@ -25,23 +26,24 @@ class _SignInPageState extends State<SignInPage> {
 
   // 登录验证
   _handlerSignIn() async {
-    if (!duIsEmail(_emailController.value.text)) {
-      toast(msg: "邮箱格式不正确...");
-      return;
-    }
-    // 验证密码
-    if (!duCheckStringLength(_passwordController.value.text, 6)) {
-      toast(msg: "密码不能小于6位...");
-      return;
-    }
+    // if (!duIsEmail(_emailController.value.text)) {
+    //   toast(msg: "邮箱格式不正确...");
+    //   return;
+    // }
+    // // 验证密码
+    // if (!duCheckStringLength(_passwordController.value.text, 6)) {
+    //   toast(msg: "密码不能小于6位...");
+    //   return;
+    // }
 
-    UserLoginRequestEntity userRequestEntity = new UserLoginRequestEntity(
-        email: _emailController.value.text,
-        password: duSHA256(_passwordController.value.text));
-    UserLoginResponseEntity response =
-        await UserAPI.login(params: userRequestEntity);
-    Global.saveProfile(response);
-    print("user login response ${response.toJson()}");
+    // UserLoginRequestEntity userRequestEntity = new UserLoginRequestEntity(
+    //     email: _emailController.value.text,
+    //     password: duSHA256(_passwordController.value.text));
+    // UserLoginResponseEntity response =
+    //     await UserAPI.login(params: userRequestEntity);
+    // Global.saveProfile(response);
+    var response = await NewsAPI.categories();
+    print("user login response ${response.length}");
   }
 
   // 注册跳转

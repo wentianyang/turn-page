@@ -1,1 +1,1 @@
-const SERVER_API_URL = "https://api.guaik.org/mock/258";
+const SERVER_API_URL = "https://api.guaik.org/mock/74";

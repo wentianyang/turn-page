@@ -1,7 +1,9 @@
+import 'dart:io';
+
 import 'package:cookie_jar/cookie_jar.dart';
+import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:turn_page/common/utils/net_cache.dart';
 import 'package:turn_page/common/values/cache.dart';
 import 'package:turn_page/common/values/values.dart';
@@ -62,6 +64,19 @@ class HttpUtil {
     }));
     // 添加缓存拦截器
     dio.interceptors.add(NetCache());
+
+    // 使用代理在调试模式下抓包（禁用https证书校验）
+    if (!Global.isRelease && PROXY_ENABLE) {
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (client) {
+        client.findProxy = (uri) {
+          return "PROXY $PROXY_IP:$PROXY_PORT";
+        };
+        // 代理工具会提供一个抓包的自签名证书，会通不过校验，所以我们禁用证书校验
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) => true;
+      };
+    }
   }
 
   // error 统一处理
