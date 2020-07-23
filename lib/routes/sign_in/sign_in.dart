@@ -26,6 +26,7 @@ class _SignInPageState extends State<SignInPage> {
 
   // 登录验证
   _handlerSignIn() async {
+    Navigator.pushNamed(context, "/app");
     // if (!duIsEmail(_emailController.value.text)) {
     //   toast(msg: "邮箱格式不正确...");
     //   return;
@@ -42,8 +43,8 @@ class _SignInPageState extends State<SignInPage> {
     // UserLoginResponseEntity response =
     //     await UserAPI.login(params: userRequestEntity);
     // Global.saveProfile(response);
-    var response = await NewsAPI.categories();
-    print("user login response ${response.length}");
+    // var response = await NewsAPI.categories();
+    // print("user login response ${response.length}");
   }
 
   // 注册跳转

@@ -3,20 +3,26 @@ import 'package:flutter/material.dart';
 import 'package:turn_page/common/values/colors.dart';
 
 Widget transparentAppbar(
-    {@required BuildContext context, List<Widget> actions}) {
+    {@required BuildContext context,
+    String title,
+    Widget titleView,
+    bool showBack = true,
+    List<Widget> actions}) {
   return AppBar(
     backgroundColor: Colors.transparent,
-    title: Text(''),
+    title: titleView ?? Text(title),
     elevation: 0,
-    leading: IconButton(
-      icon: Icon(
-        Icons.arrow_back,
-        color: AppColors.primaryText,
-      ),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    ),
+    leading: showBack
+        ? IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: AppColors.primaryText,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          )
+        : null,
     actions: actions,
   );
 }
