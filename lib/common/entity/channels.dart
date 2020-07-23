@@ -1,6 +1,6 @@
-/// 新闻分类
-class CategoryResponseEntity {
-  CategoryResponseEntity({
+/// 频道
+class ChannelResponseEntity {
+  ChannelResponseEntity({
     this.code,
     this.title,
   });
@@ -8,8 +8,8 @@ class CategoryResponseEntity {
   String code;
   String title;
 
-  factory CategoryResponseEntity.fromJson(Map<String, dynamic> json) =>
-      CategoryResponseEntity(
+  factory ChannelResponseEntity.fromJson(Map<String, dynamic> json) =>
+      ChannelResponseEntity(
         code: json["code"],
         title: json["title"],
       );

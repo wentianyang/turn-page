@@ -1,0 +1,12 @@
+# GET https://api.guaik.org/mock/74/news
+
+# GET https://api.guaik.org/mock/74/news/recommend HTTP/1.1
+
+//分类
+# GET https://api.guaik.org/mock/74/categories HTTP/1.1
+
+// 频道
+# GET https://api.guaik.org/mock/74/channels HTTP/1.1
+
+// 标签
+GET https://api.guaik.org/mock/74/tags HTTP/1.1
