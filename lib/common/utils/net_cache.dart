@@ -2,7 +2,6 @@ import 'dart:collection';
 
 import 'package:dio/dio.dart';
 import 'package:turn_page/common/values/cache.dart';
-import 'package:turn_page/global.dart';
 
 class CacheObject {
   CacheObject(this.response)
