@@ -4,7 +4,11 @@ import 'package:turn_page/common/entity/categories.dart';
 import 'package:turn_page/common/entity/channels.dart';
 import 'package:turn_page/common/entity/news.dart';
 import 'package:turn_page/common/utils/screen.dart';
-import 'package:turn_page/common/values/colors.dart';
+import 'package:turn_page/routes/main/ad_widget.dart';
+import 'package:turn_page/routes/main/channel_widget.dart';
+import 'package:turn_page/routes/main/news_item.dart';
+import 'package:turn_page/routes/main/newsletter_widget.dart';
+import 'package:turn_page/routes/main/recommend_widget.dart';
 import 'package:turn_page/widgets/categories.dart';
 
 class MainPage extends StatefulWidget {
@@ -58,34 +62,57 @@ class _MainPageState extends State<MainPage> {
 
   // 推荐
   Widget _buildRecommend() {
-    return Container(
-      height: duSetHeight(490.0),
-      color: Colors.deepPurple,
-    );
+    return _newsRecommend == null
+        ? Container()
+        : recommendWidget(_newsRecommend);
   }
 
   // 频道
   Widget _buildChannels() {
     return Container(
       height: duSetHeight(137),
-      color: Colors.blue,
+      child: _channels == null
+          ? Container()
+          : channelWidget(_channels, (ChannelResponseEntity channel) {}),
     );
   }
 
   // 新闻列表
   Widget _buildNewsList() {
-    return Container(
-      height: duSetHeight(161 * 5 + 100.0),
-      color: Colors.lime,
-    );
+    return _newsPageList == null
+        ? Container(
+            height: duSetHeight(161 * 5 + 100.0),
+          )
+        : Column(
+            children: _newsPageList.items.map((item) {
+              // 新闻
+              List<Widget> newsWidgets = <Widget>[
+                newsItem(item),
+                Divider(
+                  height: 1,
+                )
+              ];
+
+              // 每5条显示1条广告
+              int index = _newsPageList.items.indexOf(item);
+              if ((index + 1) % 5 == 0) {
+                newsWidgets.addAll(<Widget>[
+                  adWidget(),
+                  Divider(
+                    height: 1,
+                  )
+                ]);
+              }
+              return Column(
+                children: newsWidgets,
+              );
+            }).toList(),
+          );
   }
 
   // 邮箱订阅
   Widget _buildEmailSubscribe() {
-    return Container(
-      height: duSetHeight(259.0),
-      color: Colors.amber,
-    );
+    return newSletterWidget();
   }
 
   @override

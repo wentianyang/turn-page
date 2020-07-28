@@ -39,6 +39,10 @@ dependencies:
   shared_preferences: ^0.5.8
   # 安全加密
   crypto: ^2.1.4
+  # 图片缓存
+  cached_network_image: ^2.2.0+1
+  # 时间格式化
+  intl: ^0.16.1
 
 dev_dependencies:
   flutter_test:

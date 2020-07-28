@@ -37,3 +37,50 @@ Widget inputTextEdit(
     ),
   );
 }
+
+/// email 输入框
+/// 背景白色，文字黑色，带阴影
+Widget inputEmailEdit({
+  @required TextEditingController controller,
+  double marginTop,
+  bool autofocus = false,
+  bool isPassword = false,
+  String hintText,
+  TextInputType inputType = TextInputType.emailAddress,
+}) {
+  return Container(
+    height: duSetHeight(44),
+    margin: EdgeInsets.only(top: duSetHeight(marginTop)),
+    decoration: BoxDecoration(
+      color: AppColors.primaryBackground,
+      borderRadius: Radii.k6pxRadius,
+      boxShadow: [
+        BoxShadow(
+            color: Color.fromARGB(41, 0, 0, 0),
+            offset: Offset(0, 1),
+            blurRadius: 0),
+      ],
+    ),
+    child: TextField(
+      autofocus: autofocus,
+      controller: controller,
+      keyboardType: inputType,
+      decoration: InputDecoration(
+        hintText: hintText,
+        contentPadding: EdgeInsets.fromLTRB(20, 10, 0, 10),
+        border: InputBorder.none,
+        hintStyle: TextStyle(
+          color: AppColors.primaryText,
+        ),
+      ),
+      style: TextStyle(
+          color: AppColors.primaryText,
+          fontFamily: "Avenir",
+          fontWeight: FontWeight.w400,
+          fontSize: duSetFontSize(18)),
+      maxLines: 1,
+      autocorrect: false,
+      obscureText: isPassword,
+    ),
+  );
+}
