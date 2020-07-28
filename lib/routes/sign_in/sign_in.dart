@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:turn_page/common/api/api.dart';
-import 'package:turn_page/common/api/news.dart';
 import 'package:turn_page/common/entity/entities.dart';
 import 'package:turn_page/common/utils/screen.dart';
 import 'package:turn_page/common/utils/utils.dart';
@@ -26,7 +25,6 @@ class _SignInPageState extends State<SignInPage> {
 
   // 登录验证
   _handlerSignIn() async {
-    Navigator.pushNamed(context, "/app");
     // if (!duIsEmail(_emailController.value.text)) {
     //   toast(msg: "邮箱格式不正确...");
     //   return;
@@ -43,8 +41,7 @@ class _SignInPageState extends State<SignInPage> {
     // UserLoginResponseEntity response =
     //     await UserAPI.login(params: userRequestEntity);
     // Global.saveProfile(response);
-    // var response = await NewsAPI.categories();
-    // print("user login response ${response.length}");
+    Navigator.pushNamed(context, "/app");
   }
 
   // 注册跳转
