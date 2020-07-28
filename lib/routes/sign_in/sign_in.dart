@@ -25,22 +25,22 @@ class _SignInPageState extends State<SignInPage> {
 
   // 登录验证
   _handlerSignIn() async {
-    // if (!duIsEmail(_emailController.value.text)) {
-    //   toast(msg: "邮箱格式不正确...");
-    //   return;
-    // }
-    // // 验证密码
-    // if (!duCheckStringLength(_passwordController.value.text, 6)) {
-    //   toast(msg: "密码不能小于6位...");
-    //   return;
-    // }
+    if (!duIsEmail(_emailController.value.text)) {
+      toast(msg: "邮箱格式不正确...");
+      return;
+    }
+    // 验证密码
+    if (!duCheckStringLength(_passwordController.value.text, 6)) {
+      toast(msg: "密码不能小于6位...");
+      return;
+    }
 
-    // UserLoginRequestEntity userRequestEntity = new UserLoginRequestEntity(
-    //     email: _emailController.value.text,
-    //     password: duSHA256(_passwordController.value.text));
-    // UserLoginResponseEntity response =
-    //     await UserAPI.login(params: userRequestEntity);
-    // Global.saveProfile(response);
+    UserLoginRequestEntity userRequestEntity = new UserLoginRequestEntity(
+        email: _emailController.value.text,
+        password: duSHA256(_passwordController.value.text));
+    UserLoginResponseEntity response =
+        await UserAPI.login(params: userRequestEntity);
+    Global.saveProfile(response);
     Navigator.pushNamed(context, "/app");
   }
 

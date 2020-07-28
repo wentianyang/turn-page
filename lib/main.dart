@@ -1,9 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:turn_page/common/provider/app.dart';
 import 'package:turn_page/global.dart';
 import 'package:turn_page/routes/index/index.dart';
 import 'package:turn_page/routes/routes.dart';
 
-void main() => Global.init().then((e) => runApp(MyApp()));
+void main() => Global.init().then((e) => runApp(MultiProvider(
+      providers: [
+        ChangeNotifierProvider<AppState>.value(value: Global.appState)
+      ],
+      child: Consumer<AppState>(builder: (context, appState, _) {
+        if (appState.isGrayFilter) {
+          return ColorFiltered(
+            colorFilter: ColorFilter.mode(Colors.white, BlendMode.color),
+            child: MyApp(),
+          );
+        } else {
+          return MyApp();
+        }
+      }),
+    )));
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.

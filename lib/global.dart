@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:turn_page/common/provider/app.dart';
 import 'package:turn_page/common/utils/http.dart';
 import 'package:turn_page/common/utils/storage.dart';
 import 'package:turn_page/common/values/storage.dart';
@@ -24,6 +25,9 @@ class Global {
 
   /// 是否对·离线登录
   static bool isOfflineLogin = false;
+
+  /// App 状态
+  static AppState appState = AppState();
 
   /// 初始化
   static Future init() async {
