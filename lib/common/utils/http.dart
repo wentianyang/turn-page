@@ -215,7 +215,7 @@ class HttpUtil {
 
   Map<String, dynamic> getAuthorizationHeader() {
     var headers;
-    String accessToken = Global.profile.accessToken;
+    String accessToken = Global.profile?.accessToken;
     if (accessToken != null) {
       headers = {'Authorization': 'Bearer $accessToken'};
     }

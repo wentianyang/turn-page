@@ -35,4 +35,8 @@ class StorageUtil {
   bool getBool(String key) {
     return _prefs.getBool(key) ?? false;
   }
+
+  Future<bool> remove(String key) async {
+    return _prefs.remove(key);
+  }
 }

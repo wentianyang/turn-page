@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:turn_page/common/provider/app.dart';
+import 'package:turn_page/common/utils/authentication.dart';
 
 class AccountPage extends StatefulWidget {
   @override
@@ -20,6 +21,12 @@ class _AccountPageState extends State<AccountPage> {
           },
           child: Text("灰色切换"),
         ),
+        MaterialButton(
+          onPressed: () {
+            goLoginPage(context);
+          },
+          child: Text("推出登录"),
+        )
       ],
     );
   }

@@ -20,20 +20,26 @@ class UserLoginRequestEntity {
 class UserLoginResponseEntity {
   String accessToken;
   String displayName;
-  List<String> channels;
+  // List<String> channels;
 
-  UserLoginResponseEntity(
-      {@required this.accessToken, this.displayName, this.channels});
+  UserLoginResponseEntity({
+    @required this.accessToken,
+    this.displayName,
+    // this.channels,
+  });
 
   factory UserLoginResponseEntity.fromJson(Map<String, dynamic> json) =>
       UserLoginResponseEntity(
-          accessToken: json["access_token"],
-          displayName: json["display_name"],
-          channels: List<String>.from(json["channels"].map((x) => x)));
+        accessToken: json["access_token"],
+        displayName: json["display_name"],
+        // channels: List<String>.from(json["channels"].map((x) => x)),
+      );
 
   Map<String, dynamic> toJson() => {
         "access_token": accessToken,
         "display_name": displayName,
-        "channels": List<dynamic>.from(channels.map((x) => x)),
+        // "channels": List<dynamic>.from(
+        //   channels.map((x) => x),
+        // ),
       };
 }
