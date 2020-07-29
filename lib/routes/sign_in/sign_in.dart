@@ -38,8 +38,10 @@ class _SignInPageState extends State<SignInPage> {
     UserLoginRequestEntity userRequestEntity = new UserLoginRequestEntity(
         email: _emailController.value.text,
         password: duSHA256(_passwordController.value.text));
-    UserLoginResponseEntity response =
-        await UserAPI.login(params: userRequestEntity);
+    UserLoginResponseEntity response = await UserAPI.login(
+      context,
+      params: userRequestEntity,
+    );
     Global.saveProfile(response);
     Navigator.pushNamed(context, "/app");
   }

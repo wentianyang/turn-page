@@ -4,6 +4,7 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:turn_page/common/utils/net_cache.dart';
 import 'package:turn_page/common/values/cache.dart';
 import 'package:turn_page/common/values/values.dart';
@@ -132,7 +133,8 @@ class HttpUtil {
 
   /// restful get 操作
   Future get(String path,
-      {dynamic params,
+      {@required BuildContext context,
+      dynamic params,
       Options options,
       bool refresh = false,
       bool noCache = !CACHE_ENABLE,
@@ -141,6 +143,7 @@ class HttpUtil {
     try {
       var requestOptions = options ?? Options();
       requestOptions = requestOptions.merge(extra: {
+        "context": context,
         "refresh": refresh,
         "noCache": noCache,
         "list": list,
@@ -162,12 +165,25 @@ class HttpUtil {
   }
 
   /// restful post 操作
-  Future post(String path,
-      {dynamic params, Options options, CancelToken cancelToken}) async {
+  Future post(
+    String path, {
+    @required BuildContext context,
+    dynamic params,
+    Options options,
+    CancelToken cancelToken,
+  }) async {
     try {
-      var tokenOptions = options ?? getAuthorizationHeader();
+      Options requestOptions = options ?? Options();
+      requestOptions.merge(extra: {
+        "context": context,
+      });
+
+      Map<String, dynamic> _authorization = getAuthorizationHeader();
+      if (_authorization != null) {
+        requestOptions = requestOptions.merge(headers: _authorization);
+      }
       var response = await dio.post(path,
-          data: params, options: tokenOptions, cancelToken: cancelToken);
+          data: params, options: requestOptions, cancelToken: cancelToken);
       return response.data;
     } on DioError catch (e) {
       throw createErrorEntity(e);
