@@ -13,6 +13,7 @@ import 'package:turn_page/routes/main/channel_widget.dart';
 import 'package:turn_page/routes/main/news_item.dart';
 import 'package:turn_page/routes/main/newsletter_widget.dart';
 import 'package:turn_page/routes/main/recommend_widget.dart';
+import 'package:turn_page/widgets/app.dart';
 import 'package:turn_page/widgets/categories.dart';
 
 class MainPage extends StatefulWidget {
@@ -132,14 +133,16 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: <Widget>[
-        _buildCategories(),
-        _buildRecommend(),
-        _buildChannels(),
-        _buildNewsList(),
-        _buildEmailSubscribe(),
-      ],
-    );
+    return _newsPageList == null
+        ? cardListSkeleton()
+        : ListView(
+            children: <Widget>[
+              _buildCategories(),
+              _buildRecommend(),
+              _buildChannels(),
+              _buildNewsList(),
+              _buildEmailSubscribe(),
+            ],
+          );
   }
 }

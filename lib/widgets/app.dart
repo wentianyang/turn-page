@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pk_skeleton/pk_skeleton.dart';
 import 'package:turn_page/common/values/colors.dart';
 
 Widget transparentAppbar(
@@ -24,5 +25,14 @@ Widget transparentAppbar(
           )
         : null,
     actions: actions,
+  );
+}
+
+/// 骨架屏
+Widget cardListSkeleton() {
+  return PKCardListSkeleton(
+    isCircularImage: true,
+    isBottomLinesActive: false,
+    length: 10,
   );
 }
