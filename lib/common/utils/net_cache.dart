@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:dio/dio.dart';
+import 'package:turn_page/common/utils/storage.dart';
 import 'package:turn_page/common/values/cache.dart';
 
 class CacheObject {
@@ -28,6 +29,10 @@ class NetCache extends Interceptor {
 
     // 是否是下拉刷新
     bool refresh = options.extra["refresh"] == true;
+
+    // 是否磁盘缓存
+    bool cacheDisk = options.extra["cacheDisk"];
+
     if (refresh) {
       // 若是下拉刷新，先删除相关缓存
       if (options.extra["list"] == true) {
@@ -37,6 +42,11 @@ class NetCache extends Interceptor {
         // 如果不是列表，则指删除uri相同的缓存
         delete(options.uri.toString());
       }
+
+      if (cacheDisk) {
+        // 删除磁盘缓存
+        await StorageUtil().remove(options.uri.toString());
+      }
       return options;
     }
 
@@ -44,6 +54,10 @@ class NetCache extends Interceptor {
     if (options.extra["noCache"] != true &&
         options.method.toLowerCase() == 'get') {
       String key = options.extra["cacheKey"] ?? options.uri.toString();
+
+      // 缓存策略：1. 内存缓存优先， 2. 然后才是磁盘缓存
+
+      // 1. 内存缓存
       var ob = cache[key];
       if (ob != null) {
         if ((DateTime.now().millisecondsSinceEpoch - ob.timeStamp) / 1000 <
@@ -53,6 +67,17 @@ class NetCache extends Interceptor {
         } else {
           // 缓存已过期，删除缓存，向服务器请求
           cache.remove(key);
+        }
+      }
+
+      // 2. 磁盘缓存
+      if (cacheDisk) {
+        var cacheData = StorageUtil().getJSON(key);
+        if (cacheData != null) {
+          return Response(
+            statusCode: 200,
+            data: cacheData,
+          );
         }
       }
     }
@@ -75,15 +100,27 @@ class NetCache extends Interceptor {
     cache.remove(key);
   }
 
-  _saveCache(Response response) {
+  Future<void> _saveCache(Response response) async {
     RequestOptions options = response.request;
+
+    // 只缓存 get 请求
     if (options.extra["noCache"] != true &&
         options.method.toLowerCase() == "get") {
+      // 策略：内存、磁盘都写缓存
+
+      // 缓存key
+      String key = options.extra["cacheKey"] ?? options.uri.toString();
+
+      // 磁盘缓存
+      if (options.extra["cacheDisk"]) {
+        await StorageUtil().setJSON(key, response.data);
+      }
+
       if (CACHE_MAXCOUNT == cache.length) {
         // 如果缓存数量超过最大缓存数量限制，则先移除最早的一条记录
         cache.remove(cache[cache.keys.first]);
       }
-      String key = options.extra["cacheKey"] ?? options.uri.toString();
+
       cache[key] = CacheObject(response);
     }
   }

@@ -139,7 +139,8 @@ class HttpUtil {
       bool refresh = false,
       bool noCache = !CACHE_ENABLE,
       bool list = false,
-      String cacheKey}) async {
+      String cacheKey,
+      bool cacheDisk = false}) async {
     try {
       var requestOptions = options ?? Options();
       requestOptions = requestOptions.merge(extra: {
@@ -147,7 +148,8 @@ class HttpUtil {
         "refresh": refresh,
         "noCache": noCache,
         "list": list,
-        "cacheKey": cacheKey
+        "cacheKey": cacheKey,
+        "cacheDisk": cacheDisk,
       });
 
       Map<String, dynamic> _authorization = getAuthorizationHeader();

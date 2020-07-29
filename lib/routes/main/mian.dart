@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:turn_page/common/api/api.dart';
 import 'package:turn_page/common/entity/categories.dart';
 import 'package:turn_page/common/entity/channels.dart';
 import 'package:turn_page/common/entity/news.dart';
 import 'package:turn_page/common/utils/screen.dart';
+import 'package:turn_page/common/utils/storage.dart';
+import 'package:turn_page/common/values/values.dart';
 import 'package:turn_page/routes/main/ad_widget.dart';
 import 'package:turn_page/routes/main/channel_widget.dart';
 import 'package:turn_page/routes/main/news_item.dart';
@@ -32,6 +36,7 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
     _loadData();
+    _loadLatesWithDiskCache();
   }
 
   // 读取所有数据
@@ -43,6 +48,16 @@ class _MainPageState extends State<MainPage> {
     _selCategoryCode = _categories.first.code;
     if (mounted) {
       setState(() {});
+    }
+  }
+
+  // 读取磁盘缓存
+  _loadLatesWithDiskCache() {
+    if (CACHE_ENABLE) {
+      var cacheData = StorageUtil().getJSON(STORAGE_INDEX_NEWS_CACHE_KEY);
+      if (cacheData != null) {
+        Timer(Duration(seconds: 3), () {});
+      }
     }
   }
 
