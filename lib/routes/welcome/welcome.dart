@@ -1,5 +1,7 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/screenutil.dart';
+import 'package:turn_page/common/route/route.gr.dart';
 import 'package:turn_page/common/utils/utils.dart';
 import 'package:turn_page/common/values/colors.dart';
 import 'package:turn_page/common/values/values.dart';
@@ -88,7 +90,8 @@ class _WelcomePageState extends State<WelcomePage> {
           child: Text("Get Start"),
           shape: RoundedRectangleBorder(borderRadius: Radii.k6pxRadius),
           onPressed: () {
-            Navigator.pushNamed(context, "/sign-in");
+            // Navigator.pushNamed(context, "/sign-in");
+            ExtendedNavigator.root.push(Routes.signInPage);
           }),
     );
   }

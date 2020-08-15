@@ -1,6 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:turn_page/common/provider/app.dart';
+import 'package:turn_page/common/route/auth_guard.dart';
+import 'package:turn_page/common/route/route.gr.dart';
 import 'package:turn_page/global.dart';
 import 'package:turn_page/routes/index/index.dart';
 import 'package:turn_page/routes/routes.dart';
@@ -28,6 +31,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       routes: staticRoutes,
       home: IndexPage(),
+      builder: ExtendedNavigator.builder<AppRouter>(
+        router: AppRouter(),
+        initialRoute: Routes.indexPage,
+        guards: [AuthGuard()],
+      ),
     );
   }
 }

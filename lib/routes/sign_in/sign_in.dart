@@ -1,7 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:turn_page/common/api/api.dart';
 import 'package:turn_page/common/entity/entities.dart';
+import 'package:turn_page/common/route/route.gr.dart';
 import 'package:turn_page/common/utils/screen.dart';
 import 'package:turn_page/common/utils/utils.dart';
 import 'package:turn_page/common/values/colors.dart';
@@ -43,7 +45,8 @@ class _SignInPageState extends State<SignInPage> {
       params: userRequestEntity,
     );
     Global.saveProfile(response);
-    Navigator.pushNamed(context, "/app");
+    // Navigator.pushNamed(context, "/app");
+    ExtendedNavigator.root.push(Routes.applicationPage);
   }
 
   // 注册跳转

@@ -1,4 +1,6 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:turn_page/common/route/route.gr.dart';
 import 'package:turn_page/common/utils/storage.dart';
 import 'package:turn_page/common/values/storage.dart';
 import 'package:turn_page/global.dart';
@@ -18,9 +20,10 @@ Future deleteAuthentication() async {
 /// 重新登录
 Future goLoginPage(BuildContext context) async {
   await deleteAuthentication();
-  Navigator.pushNamedAndRemoveUntil(
-    context,
-    "/sign-in",
-    (Route<dynamic> route) => false,
-  );
+  // Navigator.pushNamedAndRemoveUntil(
+  //   context,
+  //   "/sign-in",
+  //   (Route<dynamic> route) => false,
+  // );
+  ExtendedNavigator.root.push(Routes.signInPage);
 }

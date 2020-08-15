@@ -1,6 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:turn_page/common/entity/entities.dart';
+import 'package:turn_page/common/route/route.gr.dart';
 import 'package:turn_page/common/utils/screen.dart';
 import 'package:turn_page/common/utils/utils.dart';
 import 'package:turn_page/common/values/colors.dart';
@@ -15,10 +17,21 @@ Widget recommendWidget(NewsRecommendResponseEntity newsRecommend) {
     child: Column(
       children: <Widget>[
         // 图
-        image.imageCache(
-          newsRecommend.thumbnail,
-          width: duSetWidth(335),
-          height: duSetHeight(290),
+        InkWell(
+          onTap: () {
+            ExtendedNavigator.root.push(
+              Routes.detailPage,
+              arguments: DetailPageArguments(
+                title: newsRecommend.title,
+                url: newsRecommend.url,
+              ),
+            );
+          },
+          child: image.imageCache(
+            newsRecommend.thumbnail,
+            width: duSetWidth(335),
+            height: duSetHeight(290),
+          ),
         ),
         // 作者
         Container(
